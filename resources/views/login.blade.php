@@ -56,7 +56,7 @@
                         Don't have an account? <a href="{{ route('register') }}"><strong> Sign Up</strong></a>
                     </form>
                     <br />
-                    <div class="row">
+                    {{-- <div class="row">
                         <div class="col-lg-12 text-center social_login mb-3">
                             <a class="btn btn-block btn-social btn-facebook social" href="{{ url('/facebook') }}">
                                 <i class="fab fa-facebook-f"></i> Sign in with Facebook
@@ -68,7 +68,7 @@
                                 <i class="fab fa-linkedin-in"></i> Sign in with LinkedIn
                             </a>
                         </div>
-                    </div>
+                    </div> --}}
                     <div class="bg-transparent animation flipInX">
                         <a href="{{ route('forgot-password') }}">Forgot Password?</a>
                     </div>

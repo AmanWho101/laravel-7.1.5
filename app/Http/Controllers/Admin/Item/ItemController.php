@@ -93,43 +93,62 @@ class ItemController extends InfyOmBaseController
      */
     public function store(CreateItemRequest $request)
     {
-        $input = $request->all();
-        $item_l = $request->input('item_list_id');
-        $item_q = $request->input('quantity');
+                $input = $request->all();
+                $item_l = $request->item_list_id;
+                $item_q = $request->quantity;
+
+            foreach ($item_q as $key => $value) {
+                
+                $items = Inventory::select('*')
+                                    ->where('inventorys.item_lis',$item_l[$key])
+                                    ->first();
+                if($items == null ){
+
+                    foreach ($item_q as $key => $value) {
+                        
+                        Inventory::create([
+                            'item_lis' => $request->item_list_id[$key],
+                            'item_tot' => $request->quantity[$key]
+                        ]);
+                        Item::create([
         
-        $inventory = new Inventory();
-        $items = Inventory::select('*')
-        ->where('inventorys.item_lis',$item_l)
-        ->first();
+                            'store_id' => $request->store_id[$key],
+                            'item_list_id' => $request->item_list_id[$key],
+                            'item_category_id' => $request->item_category_id[$key],
+                            'item_unit_id' => $request->item_unit_id[$key],
+                            'quantity'=>$request->quantity[$key]
         
-            if($items == null ){
+                        ]);
+        
+                    }
+                    
+                        Flash::success('Item saved successfully.');
+        
+                        return redirect(route('admin.item.items.index'));
+                      
+                      }else{
+                        $item_tt = collect($items->item_tot)->first();
+                        $item_t = $item_tt + $item_q[$key];
+                      
+                        Inventory::where('inventorys.item_lis',$item_l[$key])
+                                    ->update(array( 'item_tot' => $item_t,'item_lis' => $item_l[$key]));
+                      
+                        Item::create([
+        
+                            'store_id' => $request->store_id[$key],
+                            'item_list_id' => $request->item_list_id[$key],
+                            'item_category_id' => $request->item_category_id[$key],
+                            'item_unit_id' => $request->item_unit_id[$key],
+                            'quantity'=>$request->quantity[$key]
+        
+                        ]);
 
-            $inventory->item_lis = $item_l; 
-            $inventory->item_tot = $item_q;
-            
-            $inventory->save();
-            $item = $this->itemRepository->create($input);
-
-            Flash::success('Item saved successfully.');
-
-            return redirect(route('admin.item.items.index'));
-              
-              }else{
-                $item_tt = collect($items->item_tot)->first();
-                $item_t = $item_tt + $item_q;
-                $inventory->item_lis = $item_l; 
-                $inventory->item_tot = $item_t;
-      
-                Inventory::where('inventorys.item_lis',$item_l)->update(array( 'item_tot' => $item_t,'item_lis' => $item_l));
-               // $inventory->save();
-              
-                //$inventory->save();
-                $item = $this->itemRepository->create($input);
-                Flash::success('Item saved successfully.');
-
-                    return redirect(route('admin.item.items.index'));
-             
-              }
+                        Flash::success('Item saved successfully.');
+        
+                            return redirect(route('admin.item.items.index'));
+                     
+                      }
+            }
                 
 
         

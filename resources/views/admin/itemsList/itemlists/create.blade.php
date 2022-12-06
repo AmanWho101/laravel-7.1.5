@@ -32,7 +32,7 @@ Itemlist
             <div class="card-body">
             {!! Form::open(['route' => 'admin.itemsList.itemlists.store']) !!}
 
-                @include('admin.itemsList.itemlists.fields')
+                @include('admin.itemsList.itemlists.custom_fields')
 
             {!! Form::close() !!}
         </div>

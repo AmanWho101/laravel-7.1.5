@@ -30,7 +30,7 @@ BorrowedItem
                     </h4>
                 </div>
                     <div class="card-body">
-                        @include('admin.borrowedItem.borrowedItems.show_fields')
+                        @include('admin.borrowedItem.borrowedItems.model22')
                     </div>
                 </div>
 

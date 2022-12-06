@@ -1,48 +1,127 @@
 <!-- Id Field -->
+{{-- {!! $requetedItem !!} --}}
 
-<div class="form-group">
-    {!! Form::label('Requested by', 'Requested By:') !!}
-    <p>{!! collect($requetedItem)->first()->first_name,', ',collect($requetedItem)->first()->last_name !!}</p>
-    <hr>
-</div>
-<!-- Id Field -->
-<div class="form-group">
-    {!! Form::label('requested item', 'Requested Item:') !!}
-    <p>{!! collect($requetedItem)->first()->name_il !!}</p>
-    <hr>
-</div>
-<!-- Id Field -->
-<div class="form-group">
-    {!! Form::label('Item Unit', 'Item Unit:') !!}
-    <p>{!! collect($requetedItem)->first()->name_iu !!}</p>
-    <hr>
-</div>
-<!-- Id Field -->
-<div class="form-group">
-    {!! Form::label('Quantity Item', 'Quantity Item:') !!}
-    <p>{!! collect($requetedItem)->first()->quantity_b !!}</p>
-    <hr>
-</div>
-<div class="form-group">
-    {!! Form::label('room_b', 'room_b:') !!}
-    <p>{!! collect($requetedItem)->first()->room_b !!}</p>
-    <hr>
-</div>
-<div class="form-group">
-    {!! Form::label('requested date', 'requested date:') !!}
-    <p>{!! collect($requetedItem)->first()->created_at !!}</p>
-    <hr>
-</div>
+<table class="table table-hover">
+    <thead>
+        <th>
+           Item  
+        </th>   
+        <th>
+            Borrowed Room 
+        </th>
+        <th>
+            unit
+        </th> 
+        <th>
+            quantity
+        </th>  
+        <th>
+            created date
+        </th>
+        <th>
+            Action
+        </th> 
+    <thead>
+            
+   @foreach ($requetedItem as $item)
+   <tr>
+        <td>{!! $item->name_il !!}</td>
+        <td>{!! $item->room_b !!}</td>
+        <td>{!! $item->quantity_b !!}</td>
+        <td>{!! $item->name_iu !!}</td>
+        <td>{!! $item->created_at !!}</td>
+      
+        <td>
+            <div class="form-group">
+                @if (Sentinel::inRole('headofstore'))
+                {!! Form::open(['route' => 'admin.requestedItem.requetedItems.store']) !!}
+                <i class="livicon" data-name="check" data-size="18" data-loop="true" data-c="#428BCA" data-hc="#428BCA" title="Aprove"></i>
+                               <input name="approve" id="approve"  value="{!! $item->id !!}" hidden>        
+                                   {!! Form::submit('Approve', ['class' => 'btn btn-primary']) !!}
+                                   {{ Form::close() }}
+                                   @endif
+            
+                
+            </div>
+            <div class="form-group">
+                <div class="row">
+                   
+                    @if (Sentinel::inRole('department'))
+                    {!! Form::open(['route' => 'admin.requestedItem.requetedItems.store']) !!}
+                    <i class="livicon" data-name="check" data-size="18" data-loop="true" data-c="#428BCA" data-hc="#428BCA" title="Aprove"></i>
+                                   <input class="form-control" name="approve" id="approve"  value="{!! $item->id !!}" hidden>
+                                  
+                                       {!! Form::submit('Approve', ['class' => 'btn btn-primary']) !!}
+                    {{ Form::close() }}
+                    @endif
+                
+                </div>
+                
+            </div>
+            <div class="form-group">
+                @if (Sentinel::inRole('storekeeper'))
+                {!! Form::open(['route' => 'admin.requestedItem.requetedItems.store']) !!}
+                <i class="livicon" data-name="check" data-size="18" data-loop="true" data-c="#428BCA" data-hc="#428BCA" title="Aprove"></i>
+                               <input name="approve" id="approve"  value="{!! $item->id !!}" hidden>
+                              
+                                   {!! Form::submit('Approve', ['class' => 'btn btn-primary']) !!}
+                                   {{ Form::close() }}          
+                @endif
+            
+            </div>
+            <div class="form-group">
+                @if (Sentinel::inRole('fixed'))
+                {!! Form::open(['route' => 'admin.requestedItem.requetedItems.store']) !!}
+                <i class="livicon" data-name="check" data-size="18" data-loop="true" data-c="#428BCA" data-hc="#428BCA" title="Aprove"></i>
+                               <input name="approve" id="approve"  value="{!! $item->id !!}" hidden>
+                              
+                                   {!! Form::submit('Approve', ['class' => 'btn btn-primary']) !!}
+                                   {{ Form::close() }}             
+                @endif
+            
+            </div>
+            
+            <div class="form-group">
+                @if (Sentinel::inRole('consumable'))
+                {!! Form::open(['route' => 'admin.requestedItem.requetedItems.store']) !!}
+                <i class="livicon" data-name="check" data-size="18" data-loop="true" data-c="#428BCA" data-hc="#428BCA" title="Aprove"></i>
+                               <input name="approve" id="approve"  value="{!! $item->id !!}" hidden>
+                              
+                                   {!! Form::submit('Approve', ['class' => 'btn btn-primary']) !!}
+                                   {{ Form::close() }}           
+                @endif
+            
+            </div>
+            
+            <div class="form-group">
+                @if (Sentinel::inRole('datamanager'))
+                {!! Form::open(['route' => 'admin.requestedItem.requetedItems.store']) !!}
+                <i class="livicon" data-name="check" data-size="18" data-loop="true" data-c="#428BCA" data-hc="#428BCA" title="Aprove"></i>
+                               <input name="approve" id="approve"  value="{!! $item->id !!}" hidden>
+                              
+                                   {!! Form::submit('Approve', ['class' => 'btn btn-primary']) !!}
+                                   {{ Form::close() }}              
+                @endif
+            
+            </div>
+            </td>
+    </tr>
+   @endforeach
 
+  </table>
+
+
+
+{{-- 
 <div class="form-group">
     @if (Sentinel::inRole('headofstore'))
     {!! Form::open(['route' => 'admin.requestedItem.requetedItems.store']) !!}
-
+    <i class="livicon" data-name="check" data-size="18" data-loop="true" data-c="#428BCA" data-hc="#428BCA" title="Aprove"></i>
                    <input name="approve" id="approve"  value="{!! collect($requetedItem)->first()->id !!}" hidden>
                   
                        {!! Form::submit('Approve', ['class' => 'btn btn-primary']) !!}
 
-    <h5>To be aproved by Store keeper</h5>
+
     
 @endif
 
@@ -53,12 +132,12 @@
        
         @if (Sentinel::inRole('department'))
         {!! Form::open(['route' => 'admin.requestedItem.requetedItems.store']) !!}
-    
+        <i class="livicon" data-name="check" data-size="18" data-loop="true" data-c="#428BCA" data-hc="#428BCA" title="Aprove"></i>
                        <input class="form-control" name="approve" id="approve"  value="{!! collect($requetedItem)->first()->id !!}" hidden>
                       
                            {!! Form::submit('Approve', ['class' => 'btn btn-primary']) !!}
     
-                           <h5>To be aproved by Store keeper</h5>
+                           
        
         @endif
     
@@ -68,7 +147,7 @@
 <div class="form-group">
     @if (Sentinel::inRole('storekeeper'))
     {!! Form::open(['route' => 'admin.requestedItem.requetedItems.store']) !!}
-
+    <i class="livicon" data-name="check" data-size="18" data-loop="true" data-c="#428BCA" data-hc="#428BCA" title="Aprove"></i>
                    <input name="approve" id="approve"  value="{!! collect($requetedItem)->first()->id !!}" hidden>
                   
                        {!! Form::submit('Approve', ['class' => 'btn btn-primary']) !!}
@@ -80,7 +159,7 @@
 <div class="form-group">
     @if (Sentinel::inRole('fixed'))
     {!! Form::open(['route' => 'admin.requestedItem.requetedItems.store']) !!}
-
+    <i class="livicon" data-name="check" data-size="18" data-loop="true" data-c="#428BCA" data-hc="#428BCA" title="Aprove"></i>
                    <input name="approve" id="approve"  value="{!! collect($requetedItem)->first()->id !!}" hidden>
                   
                        {!! Form::submit('Approve', ['class' => 'btn btn-primary']) !!}
@@ -93,7 +172,7 @@
 <div class="form-group">
     @if (Sentinel::inRole('consumable'))
     {!! Form::open(['route' => 'admin.requestedItem.requetedItems.store']) !!}
-
+    <i class="livicon" data-name="check" data-size="18" data-loop="true" data-c="#428BCA" data-hc="#428BCA" title="Aprove"></i>
                    <input name="approve" id="approve"  value="{!! collect($requetedItem)->first()->id !!}" hidden>
                   
                        {!! Form::submit('Approve', ['class' => 'btn btn-primary']) !!}
@@ -106,7 +185,7 @@
 <div class="form-group">
     @if (Sentinel::inRole('datamanager'))
     {!! Form::open(['route' => 'admin.requestedItem.requetedItems.store']) !!}
-
+    <i class="livicon" data-name="check" data-size="18" data-loop="true" data-c="#428BCA" data-hc="#428BCA" title="Aprove"></i>
                    <input name="approve" id="approve"  value="{!! collect($requetedItem)->first()->id !!}" hidden>
                   
                        {!! Form::submit('Approve', ['class' => 'btn btn-primary']) !!}
@@ -114,4 +193,4 @@
                        
     @endif
 
-</div>
+</div> --}}

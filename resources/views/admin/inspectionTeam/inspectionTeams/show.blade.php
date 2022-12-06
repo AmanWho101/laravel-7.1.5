@@ -30,7 +30,7 @@ InspectionTeam
                     </h4>
                 </div>
                     <div class="card-body">
-                        @include('admin.inspectionTeam.inspectionTeams.show_fields')
+                        @include('admin.inspectionTeam.inspectionTeams.model19')
                     </div>
                 </div>
 

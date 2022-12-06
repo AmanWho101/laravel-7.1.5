@@ -32,7 +32,7 @@ ItemCategor
             <div class="card-body">
             {!! Form::open(['route' => 'admin.itemCategory.itemCategors.store']) !!}
 
-                @include('admin.itemCategory.itemCategors.fields')
+                @include('admin.itemCategory.itemCategors.custom_fields')
 
             {!! Form::close() !!}
         </div>

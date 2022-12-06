@@ -32,7 +32,7 @@ BorrowedItem
             <div class="card-body">
             {!! Form::open(['route' => 'admin.borrowedItem.borrowedItems.store']) !!}
 
-                @include('admin.borrowedItem.borrowedItems.fields')
+                @include('admin.borrowedItem.borrowedItems.custom_fields')
 
             {!! Form::close() !!}
         </div>

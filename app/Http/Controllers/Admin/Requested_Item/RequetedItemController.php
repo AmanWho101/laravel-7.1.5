@@ -49,10 +49,14 @@ class RequetedItemController extends InfyOmBaseController
             $requetedItems = BorrowedItem::join('itemlists','itemlists.id','=',
             'borroweditems.item_b')
             ->join('users','users.id','=','borroweditems.name_b')
+            
             ->where('borroweditems.w_approve','=',$null)
-          
+
+            ->groupBy('borroweditems.name_b')
+            ->orderBy('borroweditems.created_at', 'desc')
+
             ->get(['borroweditems.id','borroweditems.room_b','borroweditems.created_at',
-            'itemlists.name_il','users.first_name','users.last_name']);
+            'itemlists.name_il','users.first_name','users.last_name','borroweditems.name_b']);
 
 return view('admin.requestedItem.requetedItems.index',compact('requetedItems'));
 
@@ -64,9 +68,11 @@ return view('admin.requestedItem.requetedItems.index',compact('requetedItems'));
             ->where('borroweditems.item_s','!=',1)
             ->where('borroweditems.w_approve','=',1)
             ->where('borroweditems.hos_approved','=',$null)
+            ->groupBy('borroweditems.name_b')
+            ->orderBy('borroweditems.created_at', 'desc')
             ->get(['borroweditems.id','borroweditems.w_approve',
             'borroweditems.room_b','borroweditems.created_at',
-            'itemlists.name_il','users.first_name','users.last_name']);
+            'itemlists.name_il','users.first_name','users.last_name','borroweditems.name_b']);
 
 return view('admin.requestedItem.requetedItems.index',compact('requetedItems'));
 
@@ -80,9 +86,11 @@ return view('admin.requestedItem.requetedItems.index',compact('requetedItems'));
             ->where('borroweditems.hos_approved','=',1)
             ->orWhere('borroweditems.d_approve','=',1)
             ->where('borroweditems.f_approve','=',$null)
+            ->groupBy('borroweditems.name_b')
+            ->orderBy('borroweditems.created_at', 'desc')
             ->get(['borroweditems.id','borroweditems.w_approve',
             'borroweditems.room_b','borroweditems.created_at',
-            'itemlists.name_il','users.first_name','users.last_name']);
+            'itemlists.name_il','users.first_name','users.last_name','borroweditems.name_b']);
 return view('admin.requestedItem.requetedItems.index',compact('requetedItems'));
 
         }elseif(Sentinel::inRole('consumable')){
@@ -95,9 +103,11 @@ return view('admin.requestedItem.requetedItems.index',compact('requetedItems'));
             ->where('borroweditems.hos_approved','=',1)
             ->orWhere('borroweditems.d_approve','=',1)
             ->where('borroweditems.c_approve','=',$null)
+            ->groupBy('borroweditems.name_b')
+            ->orderBy('borroweditems.created_at', 'desc')
             ->get(['borroweditems.id','borroweditems.w_approve',
             'borroweditems.room_b','borroweditems.created_at',
-            'itemlists.name_il','users.first_name','users.last_name']);
+            'itemlists.name_il','users.first_name','users.last_name','borroweditems.name_b']);
 
 return view('admin.requestedItem.requetedItems.index',compact('requetedItems'));
 
@@ -111,9 +121,11 @@ return view('admin.requestedItem.requetedItems.index',compact('requetedItems'));
             ->where('borroweditems.hos_approved','=',$null)
             ->where('borroweditems.f_approve','=',$null)
             ->where('borroweditems.c_approve','=',$null)
+            ->groupBy('borroweditems.name_b')
+            ->orderBy('borroweditems.created_at', 'desc')
             ->get(['borroweditems.id',
             'borroweditems.room_b','borroweditems.created_at',
-            'itemlists.name_il','users.first_name','users.last_name']);
+            'itemlists.name_il','users.first_name','users.last_name','borroweditems.name_b']);
 
 return view('admin.requestedItem.requetedItems.index',compact('requetedItems'));
 
@@ -124,9 +136,11 @@ return view('admin.requestedItem.requetedItems.index',compact('requetedItems'));
             ->where('borroweditems.m_approve',$null)
             ->where('borroweditems.f_approve',1)
             ->orwhere('borroweditems.c_approve',1)
+            ->groupBy('borroweditems.name_b')
+            ->orderBy('borroweditems.created_at', 'desc')
             ->get(['borroweditems.id',
             'borroweditems.room_b','borroweditems.created_at',
-            'itemlists.name_il','users.first_name','users.last_name']);
+            'itemlists.name_il','users.first_name','users.last_name','borroweditems.name_b']);
 
 return view('admin.requestedItem.requetedItems.index',compact('requetedItems'));
 
@@ -158,25 +172,28 @@ return view('admin.requestedItem.requetedItems.index',compact('requetedItems'));
         $id = $request->input('approve');
       
        if(Sentinel::inRole('department')){
-        BorrowedItem::where('borroweditems.id','=',$id)
+         BorrowedItem::where('borroweditems.id','=',$id)
         ->update(array('w_approve'=>1));
          Flash::success('RequetedItem saved successfully.');
-         return redirect(route('admin.requestedItem.requetedItems.storeprint',$id));
+         if(BorrowedItem::where('borroweditems.id','=',$id)->where('borroweditems.w_approved','=',1)){
+            return redirect(route('admin.requestedItem.requetedItems.index'));
 
+         }
+         
        }elseif(Sentinel::inRole('headofstore')){
         BorrowedItem::where('borroweditems.id','=',$id)
         ->update(array('hos_approved'=>1));
         // Transaction::where('transactions.bor_id','=',$id)
         // ->update(array('hos_approved'=>1));
          Flash::success('RequetedItem saved successfully.');
-         return redirect(route('admin.requestedItem.requetedItems.storeprint',$id));
+         return redirect(route('admin.requestedItem.requetedItems.index'));
 
        }elseif(Sentinel::inRole('storekeeper')){
 
         BorrowedItem::where('borroweditems.id','=',$id)
         ->update(array('d_approve'=>1));
          Flash::success('RequetedItem saved successfully.');
-         return redirect(route('admin.requestedItem.requetedItems.storeprint',$id));
+         return redirect(route('admin.requestedItem.requetedItems.index'));
 
 
        }elseif(Sentinel::inRole('fixed')){
@@ -194,7 +211,7 @@ return view('admin.requestedItem.requetedItems.index',compact('requetedItems'));
         BorrowedItem::where('borroweditems.id','=',$id)
         ->update(array('m_approve'=>1));
         Flash::success('RequetedItem saved successfully.');
-        return redirect(route('admin.requestedItem.requetedItems.index',$id));
+        return redirect(route('admin.requestedItem.requetedItems.index'));
       }
        
     }
@@ -208,69 +225,71 @@ return view('admin.requestedItem.requetedItems.index',compact('requetedItems'));
      */
     public function storeprint($id){
         
-        if(Sentinel::inRole('department')){
-            $DateItem = $this->BorrowedItemRepository->findWithoutFail($id);
-            $date=date("Y-m-d H:i",strtotime($DateItem->created_at));
+        // if(Sentinel::inRole('department')){
+        //     $DateItem = $this->BorrowedItemRepository->findWithoutFail($id);
+        //     $date=date("Y-m-d H:i",strtotime($DateItem->created_at));
             
-            $printItem = BorrowedItem::where('borroweditems.id','=', $id)
-             ->join('itemlists','itemlists.id','=','borroweditems.item_b')
-             ->join('users','users.id','=','borroweditems.name_b')
-             ->join('itemunits','itemunits.id','=','borroweditems.item_u')
-             ->get(['itemunits.name_iu','borroweditems.w_approve','borroweditems.id',
-              'borroweditems.quantity_b','borroweditems.room_b','borroweditems.created_at',
-              'itemlists.name_il','users.first_name','users.last_name']);//
-            if (empty($printItem)) {
-                Flash::error('RequetedItem not found');
+        //     $printItem = BorrowedItem::where('borroweditems.id','=', $id)
+        //      ->join('itemlists','itemlists.id','=','borroweditems.item_b')
+        //      ->join('users','users.id','=','borroweditems.name_b')
+        //      ->join('itemunits','itemunits.id','=','borroweditems.item_u')
+        //      ->get(['itemunits.name_iu','borroweditems.w_approve','borroweditems.id',
+        //       'borroweditems.quantity_b','borroweditems.room_b','borroweditems.created_at',
+        //       'itemlists.name_il','users.first_name','users.last_name']);//
+        //     if (empty($printItem)) {
+        //         Flash::error('RequetedItem not found');
     
-                return redirect(route('requetedItems.index'));
-            }
+        //         return redirect(route('requetedItems.index'));
+        //     }
             
-            return view('admin.requestedItem.requetedItems.store&supplyunit',
-            compact('printItem'));//->with('date',$date);
-        }elseif(Sentinel::inRole('headofstore')){
-            $users = User::get();
-            $DateItem = $this->BorrowedItemRepository->findWithoutFail($id);
-            $date=date("Y-m-d H:i",strtotime($DateItem->created_at));
+        //     return view('admin.requestedItem.requetedItems.store&supplyunit',
+        //     compact('printItem'));//->with('date',$date);
+        // }elseif(Sentinel::inRole('headofstore')){
+        //     $users = User::get();
+        //     $DateItem = $this->BorrowedItemRepository->findWithoutFail($id);
+        //     $date=date("Y-m-d H:i",strtotime($DateItem->created_at));
             
-            $printItem =BorrowedItem::where('borroweditems.id','=', $id)
-            ->join('itemlists','itemlists.id','=','borroweditems.item_b')
-            ->join('users','users.id','=','borroweditems.name_b')
-            ->join('itemunits','itemunits.id','=','borroweditems.item_u')
-            ->get(['itemunits.name_iu','borroweditems.w_approve','borroweditems.id',
-            'borroweditems.quantity_b','borroweditems.room_b','borroweditems.created_at',
-            'itemlists.name_il','users.first_name','users.last_name']);
-            if (empty($printItem)) {
-                Flash::error('RequetedItem not found');
+        //     $printItem =BorrowedItem::where('borroweditems.id','=', $id)
+        //     ->join('itemlists','itemlists.id','=','borroweditems.item_b')
+        //     ->join('users','users.id','=','borroweditems.name_b')
+        //     ->join('itemunits','itemunits.id','=','borroweditems.item_u')
+        //     ->get(['itemunits.name_iu','borroweditems.w_approve','borroweditems.id',
+        //     'borroweditems.quantity_b','borroweditems.room_b','borroweditems.created_at',
+        //     'itemlists.name_il','users.first_name','users.last_name']);
+        //     if (empty($printItem)) {
+        //         Flash::error('RequetedItem not found');
     
-                return redirect(route('requetedItems.index'));
-            }
+        //         return redirect(route('requetedItems.index'));
+        //     }
             
-            return view('admin.requestedItem.requetedItems.fixedatf',
-            compact('printItem'))
-            ->with('user',$users);
+        //     return view('admin.requestedItem.requetedItems.fixedatf',
+        //     compact('printItem'))
+        //     ->with('user',$users);
 
-        }elseif(Sentinel::inRole('storekeeper')){
-            $DateItem = $this->BorrowedItemRepository->findWithoutFail($id);
-            $date=date("Y-m-d H:i",strtotime($DateItem->created_at));
+        // }elseif(Sentinel::inRole('storekeeper')){
+        //     $DateItem = $this->BorrowedItemRepository->findWithoutFail($id);
+        //     $date=date("Y-m-d H:i",strtotime($DateItem->created_at));
             
-            $printItem = BorrowedItem::where('borroweditems.id','=', $id)
-            ->join('itemlists','itemlists.id','=','borroweditems.item_b')
-            ->join('users','users.id','=','borroweditems.name_b')
-            ->join('itemunits','itemunits.id','=','borroweditems.item_u')
-            ->get(['itemunits.name_iu','borroweditems.w_approve',
-            'borroweditems.id','borroweditems.quantity_b',
-            'borroweditems.room_b','borroweditems.created_at',
-            'itemlists.name_il','users.first_name','users.last_name']);
+        //     $printItem = BorrowedItem::where('borroweditems.id','=', $id)
+        //     ->join('itemlists','itemlists.id','=','borroweditems.item_b')
+        //     ->join('users','users.id','=','borroweditems.name_b')
+        //     ->join('itemunits','itemunits.id','=','borroweditems.item_u')
+        //     ->get(['itemunits.name_iu','borroweditems.w_approve',
+        //     'borroweditems.id','borroweditems.quantity_b',
+        //     'borroweditems.room_b','borroweditems.created_at',
+        //     'itemlists.name_il','users.first_name','users.last_name']);
 
-            if (empty($printItem)) {
-                Flash::error('RequetedItem not found');
+        //     if (empty($printItem)) {
+        //         Flash::error('RequetedItem not found');
      
-                return redirect(route('requetedItems.index'));
-            }
+        //         return redirect(route('requetedItems.index'));
+        //     }
             
-            return view('admin.requestedItem.requetedItems.store&supplyunit',
-            compact('printItem'));
-        }elseif(Sentinel::inRole('fixed')){
+        //     return view('admin.requestedItem.requetedItems.store&supplyunit',
+        //     compact('printItem'));
+        // }else
+        
+        if(Sentinel::inRole('fixed')){
             $DateItem = $this->BorrowedItemRepository->findWithoutFail($id);
             $date=date("Y-m-d H:i",strtotime($DateItem->created_at));
             
@@ -316,12 +335,44 @@ return view('admin.requestedItem.requetedItems.index',compact('requetedItems'));
     public function show($id)
     {
        
-        $requetedItem = BorrowedItem::where('borroweditems.id','=',$id)
+        $null = null;
+        if(Sentinel::inRole('department'))
+        {
+
+
+            $requetedItem = BorrowedItem::where('borroweditems.name_b','=',$id)
+            ->join('itemlists','itemlists.id','=','borroweditems.item_b')
+            ->join('users','users.id','=','borroweditems.name_b')
+            ->join('itemunits','itemunits.id','=','borroweditems.item_u')
+            ->groupBy('borroweditems.created_at')
+            ->where('borroweditems.w_approve','=',$null)
+            ->get(['itemunits.name_iu','borroweditems.id','borroweditems.quantity_b',
+            'borroweditems.room_b','borroweditems.created_at','borroweditems.w_approve','borroweditems.hos_approved',
+            'itemlists.name_il','users.first_name','users.last_name']);
+            
+            if (empty($requetedItem)) {
+                Flash::error('RequetedItem not found');
+    
+                return redirect(route('requetedItems.index'));
+            }
+    
+            return view('admin.requestedItem.requetedItems.show',compact('requetedItem'));//->with('requetedItem', $requetedItem);
+      
+
+        }elseif(Sentinel::inRole('headofstore')){
+
+           
+
+        $requetedItem = BorrowedItem::where('borroweditems.name_b','=',$id)
         ->join('itemlists','itemlists.id','=','borroweditems.item_b')
         ->join('users','users.id','=','borroweditems.name_b')
         ->join('itemunits','itemunits.id','=','borroweditems.item_u')
+        ->where('borroweditems.item_s','!=',1)
+        ->where('borroweditems.w_approve','=',1)
+        ->where('borroweditems.hos_approved','=',$null)
+        ->groupBy('borroweditems.created_at')
         ->get(['itemunits.name_iu','borroweditems.id','borroweditems.quantity_b',
-        'borroweditems.room_b','.borroweditems.created_at',
+        'borroweditems.room_b','.borroweditems.created_at','borroweditems.w_approve','borroweditems.hos_approved',
         'itemlists.name_il','users.first_name','users.last_name']);
         
         if (empty($requetedItem)) {
@@ -331,6 +382,123 @@ return view('admin.requestedItem.requetedItems.index',compact('requetedItems'));
         }
 
         return view('admin.requestedItem.requetedItems.show',compact('requetedItem'));//->with('requetedItem', $requetedItem);
+  
+
+        }elseif(Sentinel::inRole('fixed')){
+
+           
+
+        $requetedItem = BorrowedItem::where('borroweditems.name_b','=',$id)
+        ->join('itemlists','itemlists.id','=','borroweditems.item_b')
+        ->join('users','users.id','=','borroweditems.name_b')
+        ->join('itemunits','itemunits.id','=','borroweditems.item_u')
+        ->where('borroweditems.item_s','=',1)
+        ->where('borroweditems.item_bc','=',1)
+        ->where('borroweditems.hos_approved','=',1)
+        ->orWhere('borroweditems.d_approve','=',1)
+        ->where('borroweditems.f_approve','=',$null)
+        ->groupBy('borroweditems.created_at')
+        ->get(['itemunits.name_iu','borroweditems.id','borroweditems.quantity_b',
+        'borroweditems.room_b','.borroweditems.created_at','borroweditems.w_approve','borroweditems.hos_approved',
+        'itemlists.name_il','users.first_name','users.last_name']);
+        
+        if (empty($requetedItem)) {
+            Flash::error('RequetedItem not found');
+
+            return redirect(route('requetedItems.index'));
+        }
+
+        return view('admin.requestedItem.requetedItems.show',compact('requetedItem'));//->with('requetedItem', $requetedItem);
+  
+
+        }elseif(Sentinel::inRole('consumable')){
+
+          
+
+
+
+            $requetedItem = BorrowedItem::where('borroweditems.name_b','=',$id)
+            ->join('itemlists','itemlists.id','=','borroweditems.item_b')
+            ->join('users','users.id','=','borroweditems.name_b')
+            ->join('itemunits','itemunits.id','=','borroweditems.item_u')
+            ->where('borroweditems.item_s','=',1)
+            ->where('borroweditems.item_bc','=',2)
+            ->where('borroweditems.hos_approved','=',1)
+            ->orWhere('borroweditems.d_approve','=',1)
+            ->where('borroweditems.c_approve','=',$null)
+            ->groupBy('borroweditems.created_at')
+            ->get(['itemunits.name_iu','borroweditems.id','borroweditems.quantity_b',
+            'borroweditems.room_b','.borroweditems.created_at','borroweditems.w_approve','borroweditems.hos_approved',
+            'itemlists.name_il','users.first_name','users.last_name']);
+            
+            if (empty($requetedItem)) {
+                Flash::error('RequetedItem not found');
+    
+                return redirect(route('requetedItems.index'));
+            }
+    
+            return view('admin.requestedItem.requetedItems.show',compact('requetedItem'));//->with('requetedItem', $requetedItem);
+      
+
+        }elseif(Sentinel::inRole('storekeeper')){
+
+            
+
+        $requetedItem = BorrowedItem::where('borroweditems.name_b','=',$id)
+        ->join('itemlists','itemlists.id','=','borroweditems.item_b')
+        ->join('users','users.id','=','borroweditems.name_b')
+        ->join('itemunits','itemunits.id','=','borroweditems.item_u')
+        ->where('borroweditems.item_s','=',1)
+        ->where('borroweditems.d_approve','=',$null)
+        ->where('borroweditems.w_approve','=',1)
+        ->where('borroweditems.hos_approved','=',$null)
+        ->where('borroweditems.f_approve','=',$null)
+        ->where('borroweditems.c_approve','=',$null)
+        ->groupBy('borroweditems.created_at')
+        ->get(['itemunits.name_iu','borroweditems.id','borroweditems.quantity_b',
+        'borroweditems.room_b','.borroweditems.created_at','borroweditems.w_approve','borroweditems.hos_approved',
+        'itemlists.name_il','users.first_name','users.last_name']);
+        
+        if (empty($requetedItem)) {
+            Flash::error('RequetedItem not found');
+
+            return redirect(route('requetedItems.index'));
+        }
+
+        return view('admin.requestedItem.requetedItems.show',compact('requetedItem'));//->with('requetedItem', $requetedItem);
+  
+
+        }elseif(Sentinel::inRole('datamanager')){
+
+           
+
+        $requetedItem = BorrowedItem::where('borroweditems.name_b','=',$id)
+        ->join('itemlists','itemlists.id','=','borroweditems.item_b')
+        ->join('users','users.id','=','borroweditems.name_b')
+        ->join('itemunits','itemunits.id','=','borroweditems.item_u')
+        ->where('borroweditems.m_approve',$null)
+        ->where('borroweditems.f_approve',1)
+        ->orwhere('borroweditems.c_approve',1)
+        ->groupBy('borroweditems.created_at')
+        ->get(['itemunits.name_iu','borroweditems.id','borroweditems.quantity_b',
+        'borroweditems.room_b','.borroweditems.created_at','borroweditems.w_approve','borroweditems.hos_approved',
+        'itemlists.name_il','users.first_name','users.last_name']);
+        
+        if (empty($requetedItem)) {
+            Flash::error('RequetedItem not found');
+
+            return redirect(route('requetedItems.index'));
+        }
+
+        return view('admin.requestedItem.requetedItems.show',compact('requetedItem'));//->with('requetedItem', $requetedItem);
+   
+
+        }
+
+
+
+
+       
     }
 
     /**

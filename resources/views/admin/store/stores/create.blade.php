@@ -32,7 +32,7 @@ Store
             <div class="card-body">
             {!! Form::open(['route' => 'admin.store.stores.store']) !!}
 
-                @include('admin.store.stores.fields')
+                @include('admin.store.stores.custom_fields')
 
             {!! Form::close() !!}
         </div>

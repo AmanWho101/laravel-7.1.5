@@ -46,7 +46,7 @@ RequetedItem
                     </h4>
                 </div>
                     <div class="card-body">
-                        @include('admin.requestedItem.requetedItems.show_fields')
+                        @include('admin.requestedItem.requetedItems.supplyunit')
                     </div>
                 </div>
 

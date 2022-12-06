@@ -59,8 +59,16 @@ class ItemUnitController extends InfyOmBaseController
     public function store(CreateItemUnitRequest $request)
     {
         $input = $request->all();
+        $name_iu = $request->name_iu;
+       // $itemUnit = $this->itemUnitRepository->create($input);
 
-        $itemUnit = $this->itemUnitRepository->create($input);
+        foreach ($name_iu as $key => $value) {
+            # code...
+            ItemUnit::create([
+                'name_iu' => $name_iu[$key],
+                'discription' => $request->discription[$key]
+            ]);
+        }
 
         Flash::success('ItemUnit saved successfully.');
 

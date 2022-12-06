@@ -94,39 +94,62 @@ class BorrowedItemController extends InfyOmBaseController
      */
     public function store(CreateBorrowedItemRequest $request)
     {   
+       
+        
         $input = $request->all();
         $item_b = $request->input('quantity_b');
-        $item_id = $request->input('item_b'); 
+        $item_id = $request->item_b; 
         $item_type = $request->input('item_bc'); 
         $room = $request->input('room_b');
         $name_b = $request->input('name_b');
         $item_s = $request->input('item_s');
 
-        $inventory = new Inventory();
-        $tras = new Transaction();
-        $items = Inventory::select('*')
-        ->where('inventorys.item_lis',$item_id)
-        ->first();
+         // trying to store multiple files
+      
+            foreach( $item_id as $key => $value ){
+                $answers[] =BorrowedItem::create( [
+                        'name_b' => $request->name_b, // borrower name
+                        'item_b' => $request->item_b[$key], // item name $request->en_answer[$i],
+                        'item_u' => $request->item_u[$key], // unity $request->question_id[$i]
+                        'item_s' => $request->item_s[$key], //store
+                        'item_bc' =>$request->item_bc[$key], //cattegory
+                        'room_b' => $request->room_b[$key], //room borrowed
+                        'quantity_b' => $request->quantity_b[$key], //quantity
+                    ]);
+                }
+       
+
+
+        return redirect(route('admin.borrowedItem.borrowedItems.index'));
         
 
-            if($items){
-                $item_tt = collect($items->item_btot)->first();
-                $item_t = $item_tt + $item_b;
-                $borrowedItemRepository = $this->borrowedItemRepository->create($input);
-                Inventory::where('inventorys.item_lis',$item_id)
-                ->update(array( 'item_btot' => $item_t)); 
-                $tras->action = 'requested';
-                $tras->r_name = $name_b;
-                $tras->item_name = $item_id;
-                $tras->item_type = $item_type;
-                $tras->item_quant = $item_b;
-                $tras->room = $room;
-                $tras->item_s = $item_s;
-                $tras->save();
-            Flash::success('BorrowedItem saved successfully.');
 
-        return redirect(route('admin.borrowedItem.borrowedItems.index')); 
-        }
+        // $inventory = new Inventory();
+        // $tras = new Transaction();
+        // $items = Inventory::select('*')
+        // ->where('inventorys.item_lis',$item_id)
+        // ->first();
+        
+
+        //     if($items){
+        //         $item_tt = collect($items->item_btot)->first();
+        //         $item_t = $item_tt + $item_b;
+        //         $borrowedItemRepository = $this->borrowedItemRepository->create($input);
+
+        //         Inventory::where('inventorys.item_lis',$item_id)
+        //         ->update(array( 'item_btot' => $item_t)); 
+        //         $tras->action = 'requested';
+        //         $tras->r_name = $name_b;
+        //         $tras->item_name = $item_id;
+        //         $tras->item_type = $item_type;
+        //         $tras->item_quant = $item_b;
+        //         $tras->room = $room;
+        //         $tras->item_s = $item_s;
+        //         $tras->save();
+        //     Flash::success('BorrowedItem saved successfully.');
+
+        // return redirect(route('admin.borrowedItem.borrowedItems.index')); 
+        // }
        
 
 
@@ -147,8 +170,11 @@ class BorrowedItemController extends InfyOmBaseController
         $borrowedItem = BorrowedItem::where('borroweditems.id', $id )
         ->join('users', 'users.id', '=' , 'borroweditems.name_b' )
         ->join('itemlists','itemlists.id', '=' , 'borroweditems.item_b')
-        ->get(['borroweditems.id','users.email'
-        ,'itemlists.name_il','borroweditems.room_b'
+        ->join('itemunits','itemunits.id','borroweditems.item_u')
+        ->groupBy('borroweditems.created_at')
+        ->get(['borroweditems.id','users.first_name','users.last_name'
+        ,'borroweditems.w_approve','borroweditems.hos_approved'
+        ,'itemlists.name_il','borroweditems.room_b','itemunits.name_iu'
         ,'borroweditems.created_at','borroweditems.quantity_b']);
 
         if (empty($borrowedItem)) {

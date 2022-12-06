@@ -60,7 +60,17 @@ class ItemlistController extends InfyOmBaseController
     {
         $input = $request->all();
 
-        $itemlist = $this->itemlistRepository->create($input);
+        //$itemlist = $this->itemlistRepository->create($input);
+
+        $name = $request->name_il;
+        $disc = $request->discription;
+
+        foreach($name as $key => $value){
+            $store[] = Itemlist::create([
+                'name_il' => $name[$key],
+                'discription' => $disc[$key]
+            ]);
+        }
 
         Flash::success('Itemlist saved successfully.');
 

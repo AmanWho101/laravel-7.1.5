@@ -58,9 +58,18 @@ class ItemCategorController extends InfyOmBaseController
      */
     public function store(CreateItemCategorRequest $request)
     {
-        $input = $request->all();
+        //$input = $request->all();
+        $name_ic = $request->name_ic;
+        //$itemCategor = $this->itemCategorRepository->create($input);
 
-        $itemCategor = $this->itemCategorRepository->create($input);
+        foreach ($name_ic as $key => $value) {
+            # code...
+            ItemCategor::create([
+                'name_ic' => $name_ic[$key],
+                'discription' => $request->discription[$key]
+            ]);
+        }
+
 
         Flash::success('ItemCategor saved successfully.');
 

@@ -2,7 +2,7 @@
 <table class="table table-striped table-bordered" id="requetedItems-table" width="100%">
     <thead>
      <tr>
-        <th>Item B</th>
+      
         <th>requested by</th>
         <th>requested Room</th>
         <th>requested date</th>
@@ -12,13 +12,13 @@
     <tbody>
     @foreach($requetedItems as $requetedItem)
         <tr>
-            <td>{!! $requetedItem->name_il!!}</td>
-            
+         
             <td>{!! $requetedItem->first_name,',',$requetedItem->last_name!!}</td>
             <td>{!! $requetedItem->room_b!!}</td>
             <td>{!! $requetedItem->created_at!!}</td>
+            
             <td>
-                 <a href="{{ route('admin.requestedItem.requetedItems.show', collect($requetedItem)->first() ) }}">
+                 <a href="{{ route('admin.requestedItem.requetedItems.show', $requetedItem->name_b ) }}">
                      <i class="livicon" data-name="info" data-size="18" data-loop="true" data-c="#428BCA" data-hc="#428BCA" title="view requetedItem"></i>
                  </a>
              

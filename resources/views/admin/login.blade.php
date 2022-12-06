@@ -52,9 +52,9 @@
                         <div id="login" class="animate form">
                             <form action="{{ route('signin') }}" autocomplete="on" method="post" role="form"
                                 id="login_form" class="my-3">
-                                <h3 class="black_bg">
+                                {{-- <h3 class="black_bg">
                                     <img src="{{ asset('img/logo.png') }}" alt="josh logo">
-                                    <br>Log In</h3>
+                                    <br>Log In</h3> --}}
                                 <!-- CSRF Token -->
                                 <input type="hidden" name="_token" value="{{ csrf_token() }}" />
                                 <div class="form-group {{ $errors->first('email', 'has-error') }}">
@@ -103,7 +103,7 @@
                                         </button>
                                     </a>
                                 </p>
-                                <div class="row">
+                                {{-- <div class="row">
                                     <div class="col-lg-12 text-center social_login mb-3">
                                         <a class="btn btn-block btn-social btn-facebook" href="{{ url('/facebook') }}">
                                             <i class="fab fa-facebook-f"></i> Sign in with Facebook
@@ -115,7 +115,7 @@
                                             <i class="fab fa-linkedin-in"></i> Sign in with LinkedIn
                                         </a>
                                     </div>
-                                </div>
+                                </div> --}}
                             </form>
                         </div>
                         <div id="register" class="animate form">

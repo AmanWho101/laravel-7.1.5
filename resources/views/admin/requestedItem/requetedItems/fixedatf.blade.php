@@ -173,6 +173,7 @@
         window.print();
 
             setTimeout(function () { 
+                
             window.open('http://localhost:8000/admin/requestedItem/requetedItems', '_blank');
           }, 1000);
     

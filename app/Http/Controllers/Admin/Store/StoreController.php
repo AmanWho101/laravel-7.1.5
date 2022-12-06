@@ -60,7 +60,18 @@ class StoreController extends InfyOmBaseController
     {
         $input = $request->all();
 
-        $store = $this->storeRepository->create($input);
+        //$store = $this->storeRepository->create($input);
+
+        $type = $request->type;
+        $disc = $request->discription;
+
+        foreach ($type as $key => $value) {
+            # code...
+            Store::create([
+                'type' => $type[$key],
+                'discription' => $disc[$key],
+            ]);
+        }
 
         Flash::success('Store saved successfully.');
 
